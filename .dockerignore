@@ -1,0 +1,25 @@
+node_modules
+npm-debug.log
+client/node_modules
+client/npm-debug.log
+client/build
+.git
+.gitignore
+README.md
+.env
+.nyc_output
+coverage
+.cache
+.DS_Store
+*.log
+.vscode
+.idea
+*.swp
+*.swo
+*~
+# SQLite database files
+api/data/
+*.db
+*.sqlite
+*.sqlite3 
+/originalworkingappsample

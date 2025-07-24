@@ -1,0 +1,25 @@
+services:
+  mf-web:
+    build: .
+    container_name: mf-web-app
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - DB_PATH=/app/api/data/experiment.db
+    volumes:
+      # Persist SQLite database
+      - sqlite_data:/app/api/data
+    # env_file:
+    #   - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8080/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  sqlite_data: 

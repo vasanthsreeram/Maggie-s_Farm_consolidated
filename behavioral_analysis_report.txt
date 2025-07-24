@@ -1,0 +1,18 @@
+
+        Maggie's Farm Behavioral Analysis Report
+        =========================================
+        
+        Data Summary:
+        - Records Analyzed: 20
+        - Unique Users: 5
+        - Total Blocks: 4
+        
+        Key Findings:
+        - Average Apple Size: 4.63
+        - Average Reaction Time: 1392.79ms
+        - Average Exploration Rate: 0.04
+        - Learning Effect Present: Yes
+        - Horizon Effects Present: No
+        
+        Data Export: behavioral_analysis_charts.png
+        

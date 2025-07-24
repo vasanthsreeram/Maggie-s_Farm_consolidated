@@ -1,0 +1,32 @@
+services:
+  mf-web-dev:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: mf-web-app-dev
+    ports:
+      - "8092:8092"
+      - "3000:3000"  # React dev server port
+    environment:
+      - NODE_ENV=development
+      - PORT=8092
+      - DB_PATH=/app/api/data/experiment.db
+    volumes:
+      # Persist SQLite database
+      - sqlite_data_dev:/app/api/data
+      # Mount source code for hot reloading
+      - ./api:/app/api
+      - ./client/src:/app/client/src
+      - ./client/public:/app/client/public
+      - ./server.js:/app/server.js
+      - ./package.json:/app/package.json
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8092/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  sqlite_data_dev:

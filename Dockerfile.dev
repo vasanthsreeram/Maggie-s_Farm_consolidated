@@ -1,0 +1,57 @@
+# Development Dockerfile for Maggie's Farm
+FROM node:18-alpine
+
+# Install build dependencies for sqlite3 compilation
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    sqlite
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files for server
+COPY package*.json ./
+
+# Install server dependencies 
+RUN npm install
+
+# Copy client package files
+COPY client/package*.json ./client/
+
+# Install client dependencies
+WORKDIR /app/client
+RUN npm install
+
+# Go back to app root
+WORKDIR /app
+
+# Copy all source code
+COPY . .
+
+# Create data directory for SQLite database
+RUN mkdir -p /app/api/data
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+
+# Change ownership of the app directory
+RUN chown -R nodejs:nodejs /app
+USER nodejs
+
+# Expose development ports
+EXPOSE 8092 3000
+
+# Set environment variables for development
+ENV NODE_ENV=development
+ENV PORT=8092
+ENV DB_PATH=/app/api/data/experiment.db
+
+# Health check for development
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:8092/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+
+# Start the application in development mode
+CMD ["npm", "run", "dev"]
